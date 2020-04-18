@@ -1,0 +1,6 @@
+stone_wall_nw,stone_wall_n,stone_wall_n,stone_wall_n,stone_wall_ne,stone_wall_n,stone_wall_n,stone_wall_ne
+stone_wall_w,stone,stone,stone,stone_door_e,stone,stone,stone_wall_e
+stone_wall_w,stone,water,water,stone_wall_e,stone,stone,stone_wall_e
+stone_door_w,stone,water,water,stone_wall_e,stone_wall_s,stone_wall_s,stone_wall_se
+stone_wall_sw,stone_wall_s,stone_wall_s,stone_wall_s,stone_wall_se,grass,grass,grass
+
