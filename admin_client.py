@@ -25,7 +25,8 @@ while not closed:
         if op == 'map':
             print('changing map to %s' % arg)
             server_con.sendall(json.dumps({'op':'admin', 'arg':'set_map', 'data':arg}).encode())
-            data = server_con.recv(1024)
+            resp_len = int(server_con.recv(8).decode())
+            data = server_con.recv(resp_len)
             if data.decode() != 'ack':
                 print('Update not acknowledged by server')
 server_con.close()
