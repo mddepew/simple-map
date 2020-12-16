@@ -8,6 +8,7 @@ import configparser
 import csv
 import pygame_gui
 import copy
+import re
 
 class TokenSelectionDialog(pygame_gui.elements.UIWindow):
     def __init__(self, manager, row, col, token_images):
@@ -125,12 +126,12 @@ class Game:
         if token_name in self.scaled_token_images:
             return self.scaled_token_images[token_name]
         elif token_name in self.token_images:
-            if token_name[-2:] == '2x':
-                self.scaled_token_images[token_name] = pygame.transform.scale(self.token_images[token_name],
-                                                                              (self.tile_size*2,self.tile_size*2))
+            if re.match('_[2-9]x',token_name[-3:]) is not None:
+                scale_factor = int(token_name[-2])
             else:
-                self.scaled_token_images[token_name] = pygame.transform.scale(self.token_images[token_name],
-                                                                              (self.tile_size,self.tile_size))
+                scale_factor = 1
+            self.scaled_token_images[token_name] = pygame.transform.scale(self.token_images[token_name],
+                                                                              (self.tile_size*scale_factor,self.tile_size*scale_factor))
             return self.scaled_token_images[token_name]
         else:
             print('Token with name "%s" not found.' % token_name)
@@ -169,10 +170,11 @@ class Game:
                 text_surface = self.font.render(name, True, (0, 0, 255))
                 self.display.blit(text_surface, dest=(x,y+self.tile_size-self.font_size))
                 if name == self.selected_token:
-                    if token['img'][-2:] == '2x':
-                        pygame.draw.rect(self.display, (255,0,0), pygame.Rect(x,y, self.tile_size*2, self.tile_size*2), 3)
+                    if re.match('_[2-9]x',token['img'][-3:]) is not None:
+                        scale_factor = int(token['img'][-2])
                     else:
-                        pygame.draw.rect(self.display, (255,0,0), pygame.Rect(x,y, self.tile_size, self.tile_size), 3)
+                        scale_factor = 1
+                    pygame.draw.rect(self.display, (255,0,0), pygame.Rect(x,y, self.tile_size*scale_factor, self.tile_size*scale_factor), 3)
 
     def draw_tiles(self, display):
         for row in range(len(self.game_grid)):
