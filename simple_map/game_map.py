@@ -125,8 +125,12 @@ class Game:
         if token_name in self.scaled_token_images:
             return self.scaled_token_images[token_name]
         elif token_name in self.token_images:
-            self.scaled_token_images[token_name] = pygame.transform.scale(self.token_images[token_name],
-                                                                          (self.tile_size,self.tile_size))
+            if token_name[-2:] == '2x':
+                self.scaled_token_images[token_name] = pygame.transform.scale(self.token_images[token_name],
+                                                                              (self.tile_size*2,self.tile_size*2))
+            else:
+                self.scaled_token_images[token_name] = pygame.transform.scale(self.token_images[token_name],
+                                                                              (self.tile_size,self.tile_size))
             return self.scaled_token_images[token_name]
         else:
             print('Token with name "%s" not found.' % token_name)
@@ -165,7 +169,10 @@ class Game:
                 text_surface = self.font.render(name, True, (0, 0, 255))
                 self.display.blit(text_surface, dest=(x,y+self.tile_size-self.font_size))
                 if name == self.selected_token:
-                    pygame.draw.rect(self.display, (255,0,0), pygame.Rect(x,y, self.tile_size, self.tile_size), 3)
+                    if token['img'][-2:] == '2x':
+                        pygame.draw.rect(self.display, (255,0,0), pygame.Rect(x,y, self.tile_size*2, self.tile_size*2), 3)
+                    else:
+                        pygame.draw.rect(self.display, (255,0,0), pygame.Rect(x,y, self.tile_size, self.tile_size), 3)
 
     def draw_tiles(self, display):
         for row in range(len(self.game_grid)):
@@ -261,17 +268,33 @@ class Game:
                     self.move_token(self.selected_token, None, None)
                     self.selected_token = None
             elif event.key == pygame.K_RIGHT:
-                self.view_offset = (self.view_offset[0]-(self.tile_size+self.tile_padding),
-                               self.view_offset[1])
+                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                    self.view_offset = (self.view_offset[0]-(self.tile_size+self.tile_padding)*10,
+                                        self.view_offset[1])
+                else:
+                    self.view_offset = (self.view_offset[0]-(self.tile_size+self.tile_padding),
+                                        self.view_offset[1])
             elif event.key == pygame.K_LEFT:
-                self.view_offset = (self.view_offset[0]+(self.tile_size+self.tile_padding),
-                               self.view_offset[1])
+                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                    self.view_offset = (self.view_offset[0]+(self.tile_size+self.tile_padding)*10,
+                                        self.view_offset[1])
+                else:
+                    self.view_offset = (self.view_offset[0]+(self.tile_size+self.tile_padding),
+                                        self.view_offset[1])
             elif event.key == pygame.K_DOWN:
-                self.view_offset = (self.view_offset[0],
-                               self.view_offset[1]-(self.tile_size+self.tile_padding))
+                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                    self.view_offset = (self.view_offset[0],
+                                        self.view_offset[1]-(self.tile_size+self.tile_padding)*10)
+                else:
+                    self.view_offset = (self.view_offset[0],
+                                        self.view_offset[1]-(self.tile_size+self.tile_padding))
             elif event.key == pygame.K_UP:
-                self.view_offset = (self.view_offset[0],
-                               self.view_offset[1]+(self.tile_size+self.tile_padding))
+                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                    self.view_offset = (self.view_offset[0],
+                                        self.view_offset[1]+(self.tile_size+self.tile_padding)*10)
+                else:
+                    self.view_offset = (self.view_offset[0],
+                                        self.view_offset[1]+(self.tile_size+self.tile_padding))
             elif event.key == pygame.K_MINUS:
                 if self.tile_size > 5:
                     self.tile_size -= 5
